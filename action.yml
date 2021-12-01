@@ -1,0 +1,9 @@
+name: 'CircleCI Trigger for GitHub Actions'
+description: 'Trigger pipelines on CircleCI for any event on GitHub.'
+inputs:
+  GHA_Meta:
+    required: false
+    description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

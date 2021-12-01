@@ -1,0 +1,36 @@
+version: 2.1
+##
+# The `GHA_Event` parameter will be populated with the value `release` when triggered by
+# the GitHub workflow. This can be used in conditional statements to run a specific workflow
+# for a specific event.
+##
+
+parameters:
+  GHA_Event:
+    type: string
+    default: ""
+  GHA_Actor:
+    type: string
+    default: ""
+  GHA_Action:
+    type: string
+    default: ""
+  GHA_Meta:
+    type: string
+    default: ""
+
+jobs:
+  release:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - run: npm install
+      - run: npm build
+      - run: npm publish
+
+workflows:
+  release:
+    when:
+      equal: [ "release", << pipeline.parameters.GHA_Event >>]
+    jobs:
+      - release
