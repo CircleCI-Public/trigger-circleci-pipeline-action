@@ -1,4 +1,4 @@
-name: 'CircleCI Trigger for GitHub Actions'
+name: 'Trigger CircleCI Pipeline GitHub Action'
 description: 'Trigger pipelines on CircleCI for any event on GitHub.'
 branding:
     icon: "check-circle"
