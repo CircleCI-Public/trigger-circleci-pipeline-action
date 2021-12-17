@@ -1,5 +1,8 @@
 name: 'CircleCI Trigger for GitHub Actions'
 description: 'Trigger pipelines on CircleCI for any event on GitHub.'
+branding:
+    icon: "check-circle"
+    color: "green"
 inputs:
   GHA_Meta:
     required: false
