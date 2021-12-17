@@ -7816,11 +7816,12 @@ function removeMatchingHeaders(regex, headers) {
   var lastValue;
   for (var header in headers) {
     if (regex.test(header)) {
-      lastValue = headers[header].toString().trim();
+      lastValue = headers[header];
       delete headers[header];
     }
   }
-  return lastValue;
+  return (lastValue === null || typeof lastValue === "undefined") ?
+    undefined : String(lastValue).trim();
 }
 
 function createErrorType(code, defaultMessage) {
@@ -9240,7 +9241,7 @@ Object.defineProperty(Response.prototype, Symbol.toStringTag, {
 });
 
 const INTERNALS$2 = Symbol('Request internals');
-const URL = whatwgUrl.URL;
+const URL = Url.URL || whatwgUrl.URL;
 
 // fix an issue where "format", "parse" aren't a named export for node <10
 const parse_url = Url.parse;
