@@ -44,7 +44,7 @@ const parameters = {
 
 const metaData = getInput("GHA_Meta");
 if (metaData.length > 0) {
-  Object.assign("GHA_Meta", metaData);
+  Object.assign(parameters, { GHA_Meta: metaData });
 }
 
 const body = {
