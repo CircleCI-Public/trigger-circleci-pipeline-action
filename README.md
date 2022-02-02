@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: circleci/trigger_circleci_pipeline@v1.0
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
 ```
@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: circleci/trigger_circleci_pipeline@v1.0
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0
         with:
           GHA_Meta: "<custom data>"
         env:
