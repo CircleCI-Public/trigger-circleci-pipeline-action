@@ -12710,13 +12710,13 @@ const [, , repoOrg, repoName] = pattern.exec(payload.repository.url);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Repo: ${repoName}`);
 const ref = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref;
 
-const branch = () => {
+const getBranch = () => {
   if (ref.startsWith("refs/heads/")) {
     return ref.substring(11);
   }
   return ref;
 };
-const tag = () => {
+const getTag = () => {
   if (ref.startsWith("refs/tags/")) {
     return ref.substring(10);
   }
@@ -12743,16 +12743,24 @@ const body = {
   parameters: parameters,
 };
 
+const tag = getTag();
+const branch = getBranch();
+
 if (tag) {
-  Object.assign(parameters, { GHA_Tag: tag() });
+  Object.assign(body, { tag });
 } else {
-  Object.assign(parameters, { GHA_Branch: branch() });
+  Object.assign(body, { branch });
 }
 
 const url = `https://circleci.com/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
 
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering URL: ${url}`);
+if (tag) {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering tag: ${tag}`);
+} else {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering branch: ${branch}`);
+}
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Parameters:\n${JSON.stringify(parameters)}`);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
 
