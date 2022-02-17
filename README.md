@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0.4
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
 ```
