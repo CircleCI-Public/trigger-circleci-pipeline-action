@@ -10,10 +10,8 @@ import { context } from "@actions/github";
 import axios from "axios";
 
 startGroup("Preparing CircleCI Pipeline Trigger");
-const payload = context.payload;
-const pattern = /github\.com\/(repos\/)?(.*)\/(.*)$/gm;
-const [, , repoOrg, repoName] = pattern.exec(payload.repository.url);
-info(`URL: ${payload.repository.url}`);
+const repoOrg = context.repo.owner;
+const repoName = context.repo.repo;
 info(`Org: ${repoOrg}`);
 info(`Repo: ${repoName}`);
 const ref = context.ref;
