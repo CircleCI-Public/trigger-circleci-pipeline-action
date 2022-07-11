@@ -98,8 +98,8 @@ workflows:
   # This workflow is set to be conditionally triggered,
   # only via the GitHub Action.
   # With no other unfiltered workflows, normal push events will be ignored.
-  when: << pipeline.parameters.GHA_Action >>
   test:
+    when: << pipeline.parameters.GHA_Action >>
     jobs:
       - test
 ```
