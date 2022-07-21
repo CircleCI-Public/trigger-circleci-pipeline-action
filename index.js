@@ -17,7 +17,7 @@ info(`Repo: ${repoName}`);
 const ref = context.ref;
 const headRef = process.env.GITHUB_HEAD_REF;
 
-const getBranch = () => process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF;
+const getBranch = getInput("Branch");
 const getTag = () => {
   if (ref.startsWith("refs/tags/")) {
     return ref.substring(10);
