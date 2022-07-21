@@ -63,7 +63,7 @@ Optional [input parameters](https://docs.github.com/en/actions/creating-actions/
 
 **required:** false
 
-**description**: An optasdional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta.
+**description**: An optasdional addasditional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta.
 
 ```yaml
 jobs:
