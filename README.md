@@ -11,7 +11,7 @@ Trigger your [CircleCI](https://circleci.com/) pipelines from any [event](https:
    A `release` trigger is shown in this example. Try any of the GitHub events for triggering workflows:
    https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 
-   Select a cusasdtom name and id for the step for additional contextual metadata in your CircleCI pipeline
+   Select a cusasdasdasdtom name and id for the step for additional contextual metadata in your CircleCI pipeline
 
 ```yaml
 on:
