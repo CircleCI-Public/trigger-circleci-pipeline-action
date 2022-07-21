@@ -4,7 +4,7 @@ branding:
     icon: "check-circle"
     color: "green"
 inputs:
-  Branch:
+  PR_Headref:
     required: true
     description: 'The base branch for the current PR'
   GHA_Meta:

@@ -4,6 +4,11 @@ on:
     types: [opened]
   issue_comment:
     types: [created]
+
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   deploy_staging:
     runs-on: ubuntu-latest
@@ -15,19 +20,16 @@ jobs:
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - name: parse comment body
+      - uses: xt0rted/pull-request-comment-branch@v1
+        if: steps.check.outputs.triggered == 'true'
+        id: comment-branch
+      - name: parse comment body    
         if: steps.check.outputs.triggered == 'true'
         run: echo "STAGING_ENV=$(echo ${{ steps.check.outputs.comment_body }} | sed 's/@deploy//' | xargs)"  >> $GITHUB_ENV
-      - id: 'get-branch'
-        run: echo ::set-output name=branch::$(gh pr view $PR_NO --repo $REPO --json headRefName --jq '.headRefName')
-        env:
-          REPO: ${{ github.repository }}
-          PR_NO: ${{ github.event.issue.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: ./
         if: steps.check.outputs.triggered == 'true'
         with:
-          Branch: ${{ steps.get-branch.outputs.branch }}
+          PR_Headref: ${{ steps.get-branch.outputs.branch }}
           GHA_Meta: ${{ env.STAGING_ENV }}
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
