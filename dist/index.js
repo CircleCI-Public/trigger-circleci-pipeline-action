@@ -13298,7 +13298,7 @@ const repoName = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
 const ref = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref;
 const headRef = process.env.GITHUB_HEAD_REF;
 
-const getBranch = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("PR_Headref");
+const getBranch = ()=> (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("PR_Headref");
 const getTag = () => {
   if (ref.startsWith("refs/tags/")) {
     return ref.substring(10);
