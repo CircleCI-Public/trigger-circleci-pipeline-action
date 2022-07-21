@@ -13298,17 +13298,7 @@ const repoName = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
 const ref = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref;
 const headRef = process.env.GITHUB_HEAD_REF;
 
-const getBranch = () => {
-  if (ref.startsWith("refs/heads/")) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Ref substring ${ref.substring(11)}`)
-    return ref.substring(11);
-  } else if (ref.startsWith("refs/pull/")) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
-    return headRef;
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Ref ${ref}`)
-  return ref;
-};
+const getBranch = () => process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF;
 const getTag = () => {
   if (ref.startsWith("refs/tags/")) {
     return ref.substring(10);
