@@ -17,7 +17,7 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
       - name: parse comment body
         if: steps.check.outputs.triggered == 'true'
-        run: echo "STAGING_ENV=$(echo ${{ steps.check.outputs.comment_body }} | tr -d @deploy | xargs)"  >> $GITHUB_ENV
+        run: echo "STAGING_ENV=$(echo ${{ steps.check.outputs.comment_body }} | sed 's/@deploy//' | xargs)"  >> $GITHUB_ENV
       - name: Get PR SHA
         id: sha
         uses: actions/github-script@v4

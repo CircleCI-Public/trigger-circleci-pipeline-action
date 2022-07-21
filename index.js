@@ -65,7 +65,7 @@ if (tag) {
 }
 
 const url = `https://circleci.com/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
-
+info(`HEADREF: ${process.env.GITHUB_HEAD_REF}`)
 info(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
 info(`Triggering URL: ${url}`);
 if (tag) {
