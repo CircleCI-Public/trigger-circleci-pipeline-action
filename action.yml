@@ -4,6 +4,9 @@ branding:
     icon: "check-circle"
     color: "green"
 inputs:
+  Branch:
+    required: true
+    description: 'The base branch for the current PR'
   GHA_Meta:
     required: false
     description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta'

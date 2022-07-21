@@ -18,25 +18,16 @@ jobs:
       - name: parse comment body
         if: steps.check.outputs.triggered == 'true'
         run: echo "STAGING_ENV=$(echo ${{ steps.check.outputs.comment_body }} | sed 's/@deploy//' | xargs)"  >> $GITHUB_ENV
-      - name: Get PR SHA
-        id: sha
-        uses: actions/github-script@v4
-        with:
-          result-encoding: string
-          script: |
-            const { owner, repo, number } = context.issue;
-            const pr = await github.pulls.get({
-              owner,
-              repo,
-              pull_number: number,
-            });
-            return pr.data.head.sha
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.sha.outputs.result }}
+      - id: 'get-branch'
+        run: echo ::set-output name=branch::$(gh pr view $PR_NO --repo $REPO --json headRefName --jq '.headRefName')
+        env:
+          REPO: ${{ github.repository }}
+          PR_NO: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: ./
         if: steps.check.outputs.triggered == 'true'
         with:
+          Branch: ${{ steps.get-branch.outputs.branch }}
           GHA_Meta: ${{ env.STAGING_ENV }}
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
