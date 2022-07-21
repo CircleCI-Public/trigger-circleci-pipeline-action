@@ -4,11 +4,6 @@ on:
     types: [opened]
   issue_comment:
     types: [created]
-
-permissions:
-  contents: read
-  pull-requests: read
-
 jobs:
   deploy_staging:
     runs-on: ubuntu-latest
