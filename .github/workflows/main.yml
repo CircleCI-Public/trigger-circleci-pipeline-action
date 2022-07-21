@@ -21,6 +21,10 @@ jobs:
       - name: parse comment body    
         if: steps.check.outputs.triggered == 'true'
         run: echo "STAGING_ENV=$(echo ${{ steps.check.outputs.comment_body }} | sed 's/@deploy//' | xargs)"  >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+        if: success()
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
       - uses: ./
         if: steps.check.outputs.triggered == 'true'
         with:
