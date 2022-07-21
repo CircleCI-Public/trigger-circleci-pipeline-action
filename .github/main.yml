@@ -1,0 +1,42 @@
+name: Staging-App
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+jobs:
+  deploy_staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: '@deploy'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      - name: parse comment body
+        if: steps.check.outputs.triggered == 'true'
+        run: echo "STAGING_ENV=$(echo ${{ steps.check.outputs.comment_body }} | tr -d @deploy | xargs)"  >> $GITHUB_ENV
+      - name: Get PR SHA
+        id: sha
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const { owner, repo, number } = context.issue;
+            const pr = await github.pulls.get({
+              owner,
+              repo,
+              pull_number: number,
+            });
+            return pr.data.head.sha
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.sha.outputs.result }}
+      - uses: tcarac/trigger-circleci-pipeline-action@v1.0.0
+        if: steps.check.outputs.triggered == 'true'
+        with:
+          GHA_Meta: ${{ env.STAGING_ENV }}
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}

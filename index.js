@@ -20,7 +20,7 @@ const headRef = process.env.GITHUB_HEAD_REF;
 const getBranch = () => {
   if (ref.startsWith("refs/heads/")) {
     return ref.substring(11);
-  } else if (ref.startsWith("refs/pull/") && headRef) {
+  } else if (ref.startsWith("refs/pull/")) {
     info(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
     return headRef;
   }
@@ -74,16 +74,16 @@ if (tag) {
 info(`Parameters:\n${JSON.stringify(parameters)}`);
 endGroup();
 
-axios
-  .post(url, body, { headers: headers })
-  .then((response) => {
-    startGroup("Successfully triggered CircleCI Pipeline");
-    info(`CircleCI API Response: ${JSON.stringify(response.data)}`);
-    endGroup();
-  })
-  .catch((error) => {
-    startGroup("Failed to trigger CircleCI Pipeline");
-    coreError(error);
-    setFailed(error.message);
-    endGroup();
-  });
+// axios
+//   .post(url, body, { headers: headers })
+//   .then((response) => {
+//     startGroup("Successfully triggered CircleCI Pipeline");
+//     info(`CircleCI API Response: ${JSON.stringify(response.data)}`);
+//     endGroup();
+//   })
+//   .catch((error) => {
+//     startGroup("Failed to trigger CircleCI Pipeline");
+//     coreError(error);
+//     setFailed(error.message);
+//     endGroup();
+//   });
