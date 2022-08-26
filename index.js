@@ -39,7 +39,7 @@ const headers = {
   "Circle-Token": `${process.env.CCI_TOKEN}`,
 };
 const parameters = {
-  GHA_Actor: context.actor,
+  GHA_Actor: 'Graph1589',
   GHA_Action: context.action,
   GHA_Event: context.eventName,
 };
