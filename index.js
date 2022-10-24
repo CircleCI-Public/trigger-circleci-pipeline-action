@@ -20,7 +20,7 @@ const headRef = process.env.GITHUB_HEAD_REF;
 const getBranch = () => {
   if (ref.startsWith("refs/heads/")) {
     return ref.substring(11);
-  } else if (ref.startsWith("refs/pull/") && headRef) {
+  } else if (headRef) {
     info(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
     return headRef;
   }
