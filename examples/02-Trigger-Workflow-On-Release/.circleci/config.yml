@@ -34,3 +34,7 @@ workflows:
       equal: [ "release", << pipeline.parameters.GHA_Event >> ]
     jobs:
       - release
+          # This is mandatory to trigger a pipeline when pushing a tag
+          filters:
+            tags:
+                only: /.*/
