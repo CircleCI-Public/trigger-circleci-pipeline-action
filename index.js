@@ -27,8 +27,12 @@ const getBranch = () => {
   return ref;
 };
 const getTag = () => {
+  const defaultBranch = context.payload.repository?.default_branch;
+  const currentBranch = getBranch();
   if (ref.startsWith("refs/tags/")) {
     return ref.substring(10);
+  } else if (context.eventName === "push" && defaultBranch === currentBranch) {
+    return context.sha;
   }
 };
 
