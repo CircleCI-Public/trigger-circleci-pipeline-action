@@ -1,7 +1,7 @@
 ## PR Checklist
 Please check if your PR fulfills the following requirements:
 
-- [ ] The commit message follows our contributor [guidelines](https://github.com/CircleCI-Public/circleci-config-sdk-ts/blob/main/CONTRIBUTING.md).
+- [ ] The commit message follows our contributor [guidelines](https://github.com/freckle/circleci-config-sdk-ts/blob/main/CONTRIBUTING.md).
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Documentation has been added or updated where needed.
 

@@ -7,6 +7,6 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0
+        uses: freckle/trigger-circleci-pipeline-action@v1.0
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}

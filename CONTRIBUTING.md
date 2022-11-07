@@ -23,7 +23,7 @@ Contact CircleCI's general support by filing a ticket here:
 Find an issue or bug?
 
 You can help us resolve the issue by
-[submitting an issue](https://github.com/CircleCI-Public/trigger-circleci-pipeline-action/issues)
+[submitting an issue](https://github.com/freckle/trigger-circleci-pipeline-action/issues)
 on our GitHub repository.
 
 Up for a challenge? If you think you can fix the issue, consider sending in a
@@ -34,7 +34,7 @@ Up for a challenge? If you think you can fix the issue, consider sending in a
 Is anything missing?
 
 You can request a new feature by
-[submitting an issue](https://github.com/CircleCI-Public/trigger-circleci-pipeline-action/issues)
+[submitting an issue](https://github.com/freckle/trigger-circleci-pipeline-action/issues)
 to our GitHub repository, utilizing the `Feature Request` template.
 
 If you would like to instead contribute a pull request, please follow the
@@ -47,8 +47,8 @@ Thank you for contributing to the CircleCI Config SDK!
 Before submitting any new Issue or Pull Request, search our repository for any
 existing or previous related submissions.
 
-- [Search Pull Requests](https://github.com/CircleCI-Public/trigger-circleci-pipeline-action/pulls?q=)
-- [Search Issues](https://github.com/CircleCI-Public/trigger-circleci-pipeline-action/issues?q=)
+- [Search Pull Requests](https://github.com/freckle/trigger-circleci-pipeline-action/pulls?q=)
+- [Search Issues](https://github.com/freckle/trigger-circleci-pipeline-action/issues?q=)
 
 ### <a name="guidelines"></a>Submission Guidelines
 
@@ -114,7 +114,7 @@ duplicating work.
 After the issue has been created, follow these steps to create a Pull Request.
 
 1. Fork the
-   [CircleCI-Public/trigger-circleci-pipeline-action](https://github.com/CircleCI-Public/trigger-circleci-pipeline-action)
+   [freckle/trigger-circleci-pipeline-action](https://github.com/freckle/trigger-circleci-pipeline-action)
    repo.
 1. Clone your newly forked repository to your local machine.
 1. Create a new branch for your changes: `git checkout -b fix_my_issue main`
