@@ -12719,8 +12719,12 @@ const getBranch = () => {
   return ref;
 };
 const getTag = () => {
+  const defaultBranch = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.repository.default_branch;
+  const currentBranch = getBranch();
   if (ref.startsWith("refs/tags/")) {
     return ref.substring(10);
+  } else if (_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName === "push" && defaultBranch === currentBranch) {
+    return _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
   }
 };
 
