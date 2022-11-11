@@ -12718,14 +12718,9 @@ const getBranch = () => {
   }
   return ref;
 };
-const getTag = () => {
-  const defaultBranch = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.repository.default_branch;
-  const currentBranch = getBranch();
-  if (ref.startsWith("refs/tags/")) {
-    return ref.substring(10);
-  } else if (_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName === "push" && defaultBranch === currentBranch) {
-    return _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
-  }
+
+const getSha = () => {
+  return _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.head.sha ?? _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
 };
 
 const headers = {
@@ -12738,6 +12733,7 @@ const parameters = {
   GHA_Actor: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
   GHA_Action: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.action,
   GHA_Event: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName,
+  GHA_Branch: getBranch(),
 };
 
 const metaData = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("GHA_Meta");
@@ -12749,24 +12745,15 @@ const body = {
   parameters: parameters,
 };
 
-const tag = getTag();
-const branch = getBranch();
+const tag = getSha();
 
-if (tag) {
-  Object.assign(body, { tag });
-} else {
-  Object.assign(body, { branch });
-}
+Object.assign(body, { tag: tag });
 
 const url = `https://circleci.com/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
 
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering URL: ${url}`);
-if (tag) {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering tag: ${tag}`);
-} else {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering branch: ${branch}`);
-}
+(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering tag: ${tag}`);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Parameters:\n${JSON.stringify(parameters)}`);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
 
