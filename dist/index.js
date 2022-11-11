@@ -12720,8 +12720,17 @@ const getBranch = () => {
 };
 
 const getSha = () => {
-  const prSha = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.head.sha
-  return prSha !== null && prSha !== undefined ? prSha : _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
+  const payload = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload;
+  if (payload !== null && payload !== undefined) {
+    const pr = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request;
+    if (pr !== null && pr !== undefined) {
+      const head = pr.head;
+      if (head !== null && head !== undefined) {
+        return head.sha;
+      }
+    }
+  }
+  return _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
 };
 
 const headers = {

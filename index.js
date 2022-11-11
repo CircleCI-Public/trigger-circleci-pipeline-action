@@ -28,8 +28,17 @@ const getBranch = () => {
 };
 
 const getSha = () => {
-  const prSha = context.payload?.pull_request?.head?.sha;
-  return prSha !== null && prSha !== undefined ? prSha : context.sha;
+  const payload = context.payload;
+  if (payload !== null && payload !== undefined) {
+    const pr = context.payload.pull_request;
+    if (pr !== null && pr !== undefined) {
+      const head = pr.head;
+      if (head !== null && head !== undefined) {
+        return head.sha;
+      }
+    }
+  }
+  return context.sha;
 };
 
 const headers = {
