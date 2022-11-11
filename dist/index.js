@@ -12720,7 +12720,8 @@ const getBranch = () => {
 };
 
 const getSha = () => {
-  return _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.head.sha ?? _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
+  const prSha = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.head.sha
+  return prSha !== null && prSha !== undefined ? prSha : _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
 };
 
 const headers = {
