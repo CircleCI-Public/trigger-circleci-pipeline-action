@@ -27,10 +27,10 @@ jobs:
       - run: npm test
 
 workflows:
-  # This workflow is set to be conditionally triggered, only when
-  # the GitHub Action is triggered.
-  # With no other workflows, normal push events will be ignored currently.
-  when: << pipeline.parameters.GHA_Action >>
   test:
+    # This workflow is set to be conditionally triggered, only when
+    # the GitHub Action is triggered.
+    # With no other workflows, normal push events will be ignored currently.
+    when: << pipeline.parameters.GHA_Action >>
     jobs:
       - test
