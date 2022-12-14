@@ -23,7 +23,7 @@ const getBranch = () => {
     info(`This is a PR. Using head PR branch`);
     const pullRequestNumber = ref.match(/refs\/pull\/([0-9]*)\//)[1];
     const newref = `pull/${pullRequestNumber}/head`;
-    return newref
+    return newref;
   }
   return ref;
 };
