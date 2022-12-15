@@ -15,14 +15,15 @@ const repoName = context.repo.repo;
 info(`Org: ${repoOrg}`);
 info(`Repo: ${repoName}`);
 const ref = context.ref;
-const headRef = process.env.GITHUB_HEAD_REF;
 
 const getBranch = () => {
   if (ref.startsWith("refs/heads/")) {
     return ref.substring(11);
-  } else if (ref.startsWith("refs/pull/") && headRef) {
-    info(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
-    return headRef;
+  } else if (ref.startsWith("refs/pull/")) {
+    info(`This is a PR. Using head PR branch`);
+    const pullRequestNumber = ref.match(/refs\/pull\/([0-9]*)\//)[1];
+    const newref = `pull/${pullRequestNumber}/head`;
+    return newref;
   }
   return ref;
 };

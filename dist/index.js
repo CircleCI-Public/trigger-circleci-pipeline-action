@@ -12707,14 +12707,15 @@ const repoName = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Org: ${repoOrg}`);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Repo: ${repoName}`);
 const ref = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref;
-const headRef = process.env.GITHUB_HEAD_REF;
 
 const getBranch = () => {
   if (ref.startsWith("refs/heads/")) {
     return ref.substring(11);
-  } else if (ref.startsWith("refs/pull/") && headRef) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
-    return headRef;
+  } else if (ref.startsWith("refs/pull/")) {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`This is a PR. Using head PR branch`);
+    const pullRequestNumber = ref.match(/refs\/pull\/([0-9]*)\//)[1];
+    const newref = `pull/${pullRequestNumber}/head`;
+    return newref;
   }
   return ref;
 };
