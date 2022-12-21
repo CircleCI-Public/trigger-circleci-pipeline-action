@@ -47,11 +47,15 @@ const headers = {
   "x-attribution-actor-id": context.actor,
   "Circle-Token": `${process.env.CCI_TOKEN}`,
 };
+
+const commit = getSha();
+
 const parameters = {
   GHA_Actor: context.actor,
   GHA_Action: context.action,
   GHA_Event: context.eventName,
   GHA_Branch: getBranch(),
+  GHA_Commit: commit,
 };
 
 const metaData = getInput("GHA_Meta");
@@ -63,15 +67,14 @@ const body = {
   parameters: parameters,
 };
 
-const tag = getSha();
-
-Object.assign(body, { tag: tag });
+Object.assign(body, { tag: commit });
 
 const url = `https://circleci.com/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
 
 info(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
 info(`Triggering URL: ${url}`);
-info(`Triggering tag: ${tag}`);
+info(`Triggering commit: ${commit}`);
+info(`Triggering tag: ${commit}`);
 info(`Parameters:\n${JSON.stringify(parameters)}`);
 endGroup();
 
