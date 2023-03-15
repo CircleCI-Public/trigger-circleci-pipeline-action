@@ -8,5 +8,5 @@ inputs:
     required: false
     description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
