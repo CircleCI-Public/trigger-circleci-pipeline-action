@@ -16558,6 +16558,10 @@ axios__WEBPACK_IMPORTED_MODULE_2___default().post(url, body, { headers: headers 
   .then((response) => {
     (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Successfully triggered CircleCI Pipeline");
     (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("created_at", response.data.created_at);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("id", response.data.id);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("number", response.data.number);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("state", response.data.state);
     (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
   })
   .catch((error) => {

@@ -79,6 +79,15 @@ jobs:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
 ```
 
+# Outputs
+
+Field | Data Type | Description
+-- | -- | --
+`id` | string (uuid) | The unique ID of the pipeline.
+`state` | string (Enum: "created" "errored" "setup-pending" "setup" "pending") | The current state of the pipeline.
+`number` | integer (int64) | The number of the pipeline.
+`created_at` | string (date-time) | The date and time the pipeline was created.
+
 # Things To Know
 
 ## GitHub Actions runs _alongside_ native CircleCI integration.

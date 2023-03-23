@@ -7,6 +7,15 @@ inputs:
   GHA_Meta:
     required: false
     description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta'
+outputs:
+  id:
+    description: The unique ID of the pipeline.
+  state:
+    description: The current state of the pipeline.
+  number:
+    description: The number of the pipeline.
+  created_at:
+    description: The date and time the pipeline was created.
 runs:
   using: 'node16'
   main: 'dist/index.js'
