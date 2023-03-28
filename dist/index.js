@@ -9044,7 +9044,7 @@ function setup(env) {
 			namespaces = split[i].replace(/\*/g, '.*?');
 
 			if (namespaces[0] === '-') {
-				createDebug.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+				createDebug.skips.push(new RegExp('^' + namespaces.slice(1) + '$'));
 			} else {
 				createDebug.names.push(new RegExp('^' + namespaces + '$'));
 			}
@@ -16242,6 +16242,90 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 6144:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core_1 = __nccwpck_require__(2186);
+const github_1 = __nccwpck_require__(5438);
+const axios_1 = __importDefault(__nccwpck_require__(6545));
+const getTag = (ref) => {
+    if (ref.startsWith("refs/tags/")) {
+        return ref.substring(10);
+    }
+};
+const getBranch = (ref) => {
+    if (ref.startsWith("refs/heads/")) {
+        return ref.substring(11);
+    }
+    else if (ref.startsWith("refs/pull/")) {
+        (0, core_1.info)(`This is a PR. Using head PR branch`);
+        const pullRequestNumber = ref.match(/refs\/pull\/([0-9]*)\//)[1];
+        const newref = `pull/${pullRequestNumber}/head`;
+        return newref;
+    }
+    return ref;
+};
+const { owner, repo } = github_1.context.repo;
+const host = `${process.env.CCI_HOST}` || "circleci.com";
+const url = `https://${host}/api/v2/project/gh/${owner}/${repo}/pipeline`;
+const metaData = (0, core_1.getInput)("GHA_Meta");
+const tag = getTag(github_1.context.ref);
+const branch = getBranch(github_1.context.ref);
+const parameters = {
+    GHA_Actor: github_1.context.actor,
+    GHA_Action: github_1.context.action,
+    GHA_Event: github_1.context.eventName,
+};
+const body = {
+    parameters: parameters,
+};
+(0, core_1.startGroup)("Preparing CircleCI Pipeline Trigger");
+(0, core_1.info)(`Org: ${owner}`);
+(0, core_1.info)(`Repo: ${repo}`);
+if (metaData.length > 0) {
+    parameters.GHA_Meta = metaData;
+}
+body[tag ? "tag" : "branch"] = tag || branch;
+(0, core_1.info)(`Triggering CircleCI Pipeline for ${owner}/${repo}`);
+(0, core_1.info)(`  Triggering URL: ${url}`);
+const trigger = tag ? `tag: ${tag}` : `branch: ${branch}`;
+(0, core_1.info)(`  Triggering ${trigger}`);
+(0, core_1.info)(`    Parameters:\n${JSON.stringify(parameters)}`);
+(0, core_1.endGroup)();
+axios_1.default
+    .post(url, body, {
+    headers: {
+        "content-type": "application/json",
+        "x-attribution-login": github_1.context.actor,
+        "x-attribution-actor-id": github_1.context.actor,
+        "Circle-Token": `${process.env.CCI_TOKEN}`,
+    },
+})
+    .then((response) => {
+    (0, core_1.startGroup)("Successfully triggered CircleCI Pipeline");
+    (0, core_1.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
+    (0, core_1.setOutput)("created_at", response.data.created_at);
+    (0, core_1.setOutput)("id", response.data.id);
+    (0, core_1.setOutput)("number", response.data.number);
+    (0, core_1.setOutput)("state", response.data.state);
+    (0, core_1.endGroup)();
+})
+    .catch((error) => {
+    (0, core_1.startGroup)("Failed to trigger CircleCI Pipeline");
+    (0, core_1.error)(error);
+    (0, core_1.setFailed)(error.message);
+    (0, core_1.endGroup)();
+});
+
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -16427,152 +16511,17 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5438);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(6545);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
-
-
-
-
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Preparing CircleCI Pipeline Trigger");
-const repoOrg = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner;
-const repoName = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
-const host = `${process.env.CCI_HOST}` || "circleci.com";
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Org: ${repoOrg}`);
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Repo: ${repoName}`);
-const ref = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref;
-
-const getBranch = () => {
-  if (ref.startsWith("refs/heads/")) {
-    return ref.substring(11);
-  } else if (ref.startsWith("refs/pull/")) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`This is a PR. Using head PR branch`);
-    const pullRequestNumber = ref.match(/refs\/pull\/([0-9]*)\//)[1];
-    const newref = `pull/${pullRequestNumber}/head`;
-    return newref;
-  }
-  return ref;
-};
-const getTag = () => {
-  if (ref.startsWith("refs/tags/")) {
-    return ref.substring(10);
-  }
-};
-
-const headers = {
-  "content-type": "application/json",
-  "x-attribution-login": _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
-  "x-attribution-actor-id": _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
-  "Circle-Token": `${process.env.CCI_TOKEN}`,
-};
-const parameters = {
-  GHA_Actor: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
-  GHA_Action: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.action,
-  GHA_Event: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName,
-};
-
-const metaData = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("GHA_Meta");
-if (metaData.length > 0) {
-  Object.assign(parameters, { GHA_Meta: metaData });
-}
-
-const body = {
-  parameters: parameters,
-};
-
-const tag = getTag();
-const branch = getBranch();
-
-if (tag) {
-  Object.assign(body, { tag });
-} else {
-  Object.assign(body, { branch });
-}
-
-const url = `https://${host}/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
-
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering URL: ${url}`);
-if (tag) {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering tag: ${tag}`);
-} else {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering branch: ${branch}`);
-}
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Parameters:\n${JSON.stringify(parameters)}`);
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
-
-axios__WEBPACK_IMPORTED_MODULE_2___default().post(url, body, { headers: headers })
-  .then((response) => {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Successfully triggered CircleCI Pipeline");
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("created_at", response.data.created_at);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("id", response.data.id);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("number", response.data.number);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("state", response.data.state);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
-  })
-  .catch((error) => {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Failed to trigger CircleCI Pipeline");
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.error)(error);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
-  });
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
