@@ -2,12 +2,12 @@
   "name": "trigger-circleci-pipeline-gha",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.js --license licenses.txt",
-    "lint": "eslint index.js",
-    "format": "prettier --write index.js",
+    "build": "ncc build src/index.ts --license licenses.txt",
+    "lint": "eslint src/",
+    "format": "prettier --write src/index.ts",
     "prepare": "husky install"
   },
   "repository": {
@@ -22,14 +22,18 @@
   },
   "homepage": "https://github.com/CircleCI-Public/trigger-circleci-pipeline-action#readme",
   "dependencies": {
-    "@actions/github": "^5.1.1",
     "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
     "axios": "^0.27.2"
   },
   "devDependencies": {
+    "@types/node": "^18.15.10",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "@vercel/ncc": "^0.33.3",
-    "eslint": "^8.12.0",
+    "eslint": "^8.36.0",
     "husky": "^7.0.0",
-    "prettier": "2.5.0"
+    "prettier": "2.5.0",
+    "typescript": "^5.0.2"
   }
 }

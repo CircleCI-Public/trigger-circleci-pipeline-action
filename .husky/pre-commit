@@ -2,3 +2,6 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npm run lint && npm run format && npm run build
+# Stage modified files
+## https://github.com/CircleCI-Public/trigger-circleci-pipeline-action/pull/51#discussion_r1152164608
+# git add $(git diff --name-only)
