@@ -31,7 +31,7 @@ const getBranch = (ref: string) => {
 };
 
 const { owner, repo } = context.repo;
-const host = `${process.env.CCI_HOST}` || "circleci.com";
+const host = process.env.CCI_HOST || "circleci.com";
 const url = `https://${host}/api/v2/project/gh/${owner}/${repo}/pipeline`;
 const metaData = getInput("GHA_Meta");
 const tag = getTag(context.ref);
