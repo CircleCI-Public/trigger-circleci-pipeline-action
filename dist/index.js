@@ -16275,8 +16275,10 @@ const { owner, repo } = github_1.context.repo;
 const host = process.env.CCI_HOST || "circleci.com";
 const url = `https://${host}/api/v2/project/gh/${owner}/${repo}/pipeline`;
 const metaData = (0, core_1.getInput)("GHA_Meta");
-const tag = getTag(github_1.context.ref);
-const branch = getBranch(github_1.context.ref);
+const tag = process.env.TARGET_TAG ?? (0, core_1.getInput)("target-tag") ?? getTag(github_1.context.ref);
+const branch = process.env.TARGET_BRANCH ??
+    (0, core_1.getInput)("target-branch") ??
+    getBranch(github_1.context.ref);
 const parameters = {
     GHA_Actor: github_1.context.actor,
     GHA_Action: github_1.context.action,
