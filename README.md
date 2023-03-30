@@ -79,6 +79,26 @@ jobs:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
 ```
 
+### target-slug
+
+**required:** false
+
+**description**: The [CircleCI project slug](https://circleci.com/docs/api-developers-guide/#github-and-bitbucket-projects) of the target project (ex: `github/<org>/<repo>`). If not specified, the slug of the current GitHub repository will be used.
+
+```yaml
+jobs:
+  trigger-circleci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: <customize name>
+        id: <customize id>
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0.5
+        with:
+          target-slug: "gh/<org>/<repo>" # Will trigger the pipeline for external project
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
+```
+
 # Outputs
 
 Field | Data Type | Description

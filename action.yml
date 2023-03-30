@@ -6,16 +6,16 @@ branding:
 inputs:
   GHA_Meta:
     required: false
-    description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta'
+    description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta.'
   target-slug:
     required: false
-    description: 'The slug of the target CircleCI project. For example, "github/<org>/<project>". Will default to the current project.'
+    description: 'The slug of the target CircleCI project. For example, "github/<org>/<project>". Will default to the current project. Can be overwritten with "TARGET_SLUG" environment variable.'
   target-branch:
     required: false
-    description: 'The branch of the target CircleCI project. Will default to the current branch name. This should be overwritten if "target-slug" is set.'
+    description: 'The branch of the target CircleCI project. Will default to the current branch name. This should be overwritten if "target-slug" is set. Can be overwritten with "TARGET_BRANCH" environment variable.'
   target-tag:
     required: false
-    description: 'The tag of the target CircleCI project. Will default to the current tag name if set. This or branch should be overwritten if "target-slug" is set.'
+    description: 'The tag of the target CircleCI project. Will default to the current tag name if set. This or branch should be overwritten if "target-slug" is set. Can be overwritten with "TARGET_TAG" environment variable.'
 outputs:
   id:
     description: The unique ID of the pipeline.

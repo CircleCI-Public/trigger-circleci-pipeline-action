@@ -36,10 +36,12 @@ const parseSlug = (slug: string) => {
     throw new Error(`Invalid target-slug: ${slug}`);
   }
   return { vcs, owner, repo };
-}
+};
 
 const slug = process.env.TARGET_SLUG ?? getInput("target-slug");
-const { vcs, owner, repo } = slug ? parseSlug(slug) : {...context.repo, vcs: "gh"};
+const { vcs, owner, repo } = slug
+  ? parseSlug(slug)
+  : { ...context.repo, vcs: "gh" };
 const host = process.env.CCI_HOST || "circleci.com";
 const url = `https://${host}/api/v2/project/${vcs}/${owner}/${repo}/pipeline`;
 const metaData = getInput("GHA_Meta");
