@@ -30,12 +30,27 @@ const getBranch = (ref: string) => {
   return ref;
 };
 
-const { owner, repo } = context.repo;
+const parseSlug = (slug: string) => {
+  const [vcs, owner, repo] = slug.split("/");
+  if (!owner || !repo || !vcs) {
+    throw new Error(`Invalid target-slug: ${slug}`);
+  }
+  return { vcs, owner, repo };
+};
+
+const slug = process.env.TARGET_SLUG ?? getInput("target-slug");
+const { vcs, owner, repo } = slug
+  ? parseSlug(slug)
+  : { ...context.repo, vcs: "gh" };
 const host = process.env.CCI_HOST || "circleci.com";
-const url = `https://${host}/api/v2/project/gh/${owner}/${repo}/pipeline`;
+const url = `https://${host}/api/v2/project/${vcs}/${owner}/${repo}/pipeline`;
 const metaData = getInput("GHA_Meta");
-const tag = getTag(context.ref);
-const branch = getBranch(context.ref);
+const tag =
+  process.env.TARGET_TAG ?? getInput("target-tag") ?? getTag(context.ref);
+const branch =
+  process.env.TARGET_BRANCH ??
+  getInput("target-branch") ??
+  getBranch(context.ref);
 const parameters: CircleCIPipelineParams = {
   GHA_Actor: context.actor,
   GHA_Action: context.action,
