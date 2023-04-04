@@ -16242,7 +16242,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 6144:
+/***/ 1373:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -16251,79 +16251,106 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CircleCIPipelineTrigger = void 0;
 const core_1 = __nccwpck_require__(2186);
-const github_1 = __nccwpck_require__(5438);
 const axios_1 = __importDefault(__nccwpck_require__(6545));
-const getTag = (ref) => {
-    if (ref.startsWith("refs/tags/")) {
-        return ref.substring(10);
+class CircleCIPipelineTrigger {
+    constructor(context, host = process.env.CCI_HOST || "circleci.com") {
+        this.context = context;
+        this.host = host;
+        const slug = process.env.TARGET_SLUG ?? (0, core_1.getInput)("target-slug");
+        const { vcs, owner, repo } = slug
+            ? this.parseSlug(slug)
+            : { ...context.repo, vcs: "gh" };
+        this.vcs = vcs;
+        this.owner = owner;
+        this.repo = repo;
+        this.url = `https://${this.host}/api/v2/project/${this.vcs}/${this.owner}/${this.repo}/pipeline`;
+        this.metaData = (0, core_1.getInput)("GHA_Meta");
+        this.tag = this.getTag();
+        this.branch = this.getBranch();
+        this.parameters = {
+            GHA_Actor: context.actor,
+            GHA_Action: context.action,
+            GHA_Event: context.eventName,
+        };
     }
-};
-const getBranch = (ref) => {
-    if (ref.startsWith("refs/heads/")) {
-        return ref.substring(11);
+    parseSlug(slug) {
+        const [vcs, owner, repo] = slug.split("/");
+        if (!owner || !repo || !vcs) {
+            throw new Error(`Invalid target-slug: ${slug}`);
+        }
+        return { vcs, owner, repo };
     }
-    else if (ref.startsWith("refs/pull/")) {
-        (0, core_1.info)(`This is a PR. Using head PR branch`);
-        const pullRequestNumber = ref.match(/refs\/pull\/([0-9]*)\//)[1];
-        const newref = `pull/${pullRequestNumber}/head`;
-        return newref;
+    getTag() {
+        let tag = process.env.TARGET_TAG ?? (0, core_1.getInput)("target-tag");
+        if (!tag) {
+            const tagRef = "refs/tags/";
+            if (this.context.ref.startsWith(tagRef)) {
+                tag = this.context.ref.substring(tagRef.length);
+            }
+        }
+        return tag;
     }
-    return ref;
-};
-const { owner, repo } = github_1.context.repo;
-const host = process.env.CCI_HOST || "circleci.com";
-const url = `https://${host}/api/v2/project/gh/${owner}/${repo}/pipeline`;
-const metaData = (0, core_1.getInput)("GHA_Meta");
-const tag = process.env.TARGET_TAG ?? (0, core_1.getInput)("target-tag") ?? getTag(github_1.context.ref);
-const branch = process.env.TARGET_BRANCH ??
-    (0, core_1.getInput)("target-branch") ??
-    getBranch(github_1.context.ref);
-const parameters = {
-    GHA_Actor: github_1.context.actor,
-    GHA_Action: github_1.context.action,
-    GHA_Event: github_1.context.eventName,
-};
-const body = {
-    parameters: parameters,
-};
-(0, core_1.startGroup)("Preparing CircleCI Pipeline Trigger");
-(0, core_1.info)(`Org: ${owner}`);
-(0, core_1.info)(`Repo: ${repo}`);
-if (metaData.length > 0) {
-    parameters.GHA_Meta = metaData;
+    getBranch() {
+        let branch = process.env.TARGET_BRANCH ?? (0, core_1.getInput)("target-branch");
+        if (!branch) {
+            if (this.context.ref.startsWith("refs/heads/")) {
+                branch = this.context.ref.substring(11);
+            }
+            else if (this.context.ref.startsWith("refs/pull/")) {
+                (0, core_1.info)(`This is a PR. Using head PR branch`);
+                const pullRequestNumber = this.context.ref.match(/refs\/pull\/([0-9]*)\//)[1];
+                const newref = `pull/${pullRequestNumber}/head`;
+                branch = newref;
+            }
+        }
+        return branch;
+    }
+    triggerPipeline() {
+        const body = {
+            parameters: this.parameters,
+        };
+        (0, core_1.startGroup)("Preparing CircleCI Pipeline Trigger");
+        (0, core_1.info)(`Org: ${this.owner}`);
+        (0, core_1.info)(`Repo: ${this.repo}`);
+        if (this.metaData.length > 0) {
+            this.parameters.GHA_Meta = this.metaData;
+        }
+        body[this.tag ? "tag" : "branch"] = this.tag || this.branch;
+        (0, core_1.info)(`Triggering CircleCI Pipeline for ${this.owner}/${this.repo}`);
+        (0, core_1.info)(`  Triggering URL: ${this.url}`);
+        const trigger = this.tag ? `tag: ${this.tag}` : `branch: ${this.branch}`;
+        (0, core_1.info)(`  Triggering ${trigger}`);
+        (0, core_1.info)(`    Parameters:\n${JSON.stringify(this.parameters)}`);
+        (0, core_1.endGroup)();
+        axios_1.default
+            .post(this.url, body, {
+            headers: {
+                "content-type": "application/json",
+                "x-attribution-login": this.context.actor,
+                "x-attribution-actor-id": this.context.actor,
+                "Circle-Token": `${process.env.CCI_TOKEN}`,
+            },
+        })
+            .then((response) => {
+            (0, core_1.startGroup)("Successfully triggered CircleCI Pipeline");
+            (0, core_1.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
+            (0, core_1.setOutput)("created_at", response.data.created_at);
+            (0, core_1.setOutput)("id", response.data.id);
+            (0, core_1.setOutput)("number", response.data.number);
+            (0, core_1.setOutput)("state", response.data.state);
+            (0, core_1.endGroup)();
+        })
+            .catch((error) => {
+            (0, core_1.startGroup)("Failed to trigger CircleCI Pipeline");
+            (0, core_1.error)(error);
+            (0, core_1.setFailed)(error.message);
+            (0, core_1.endGroup)();
+        });
+    }
 }
-body[tag ? "tag" : "branch"] = tag || branch;
-(0, core_1.info)(`Triggering CircleCI Pipeline for ${owner}/${repo}`);
-(0, core_1.info)(`  Triggering URL: ${url}`);
-const trigger = tag ? `tag: ${tag}` : `branch: ${branch}`;
-(0, core_1.info)(`  Triggering ${trigger}`);
-(0, core_1.info)(`    Parameters:\n${JSON.stringify(parameters)}`);
-(0, core_1.endGroup)();
-axios_1.default
-    .post(url, body, {
-    headers: {
-        "content-type": "application/json",
-        "x-attribution-login": github_1.context.actor,
-        "x-attribution-actor-id": github_1.context.actor,
-        "Circle-Token": `${process.env.CCI_TOKEN}`,
-    },
-})
-    .then((response) => {
-    (0, core_1.startGroup)("Successfully triggered CircleCI Pipeline");
-    (0, core_1.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
-    (0, core_1.setOutput)("created_at", response.data.created_at);
-    (0, core_1.setOutput)("id", response.data.id);
-    (0, core_1.setOutput)("number", response.data.number);
-    (0, core_1.setOutput)("state", response.data.state);
-    (0, core_1.endGroup)();
-})
-    .catch((error) => {
-    (0, core_1.startGroup)("Failed to trigger CircleCI Pipeline");
-    (0, core_1.error)(error);
-    (0, core_1.setFailed)(error.message);
-    (0, core_1.endGroup)();
-});
+exports.CircleCIPipelineTrigger = CircleCIPipelineTrigger;
 
 
 /***/ }),
@@ -16518,12 +16545,20 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+var exports = __webpack_exports__;
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const CircleCIPipelineTrigger_1 = __nccwpck_require__(1373);
+const github_1 = __nccwpck_require__(5438);
+const trigger = new CircleCIPipelineTrigger_1.CircleCIPipelineTrigger(github_1.context);
+trigger.triggerPipeline();
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
