@@ -98,6 +98,26 @@ jobs:
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
 ```
+### target-branch
+
+**required:** false
+
+**description**: The branch of the target CircleCI project. Will default to the current branch name
+
+```yaml
+jobs:
+  trigger-circleci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: <customize name>
+        id: <customize id>
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0.5
+        with:
+          target-branch: "<branch_name>"
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
+```
+
 
 # Outputs
 
