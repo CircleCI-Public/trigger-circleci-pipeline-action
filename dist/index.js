@@ -16242,19 +16242,15 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 1373:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ 9164:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CircleCIPipelineTrigger = void 0;
+exports.CircleCIBase = void 0;
 const core_1 = __nccwpck_require__(2186);
-const axios_1 = __importDefault(__nccwpck_require__(6545));
-class CircleCIPipelineTrigger {
+class CircleCIBase {
     constructor(context, host = process.env.CCI_HOST || "circleci.com") {
         this.context = context;
         this.host = host;
@@ -16265,15 +16261,10 @@ class CircleCIPipelineTrigger {
         this.vcs = vcs;
         this.owner = owner;
         this.repo = repo;
-        this.url = `https://${this.host}/api/v2/project/${this.vcs}/${this.owner}/${this.repo}/pipeline`;
-        this.metaData = (0, core_1.getInput)("GHA_Meta");
+        this.base_url = `https://${this.host}/api/v2`;
+        this.project_url = `${this.base_url}/project/${this.vcs}/${this.owner}/${this.repo}`;
         this.tag = this.getTag();
         this.branch = this.getBranch();
-        this.parameters = {
-            GHA_Actor: context.actor,
-            GHA_Action: context.action,
-            GHA_Event: context.eventName,
-        };
     }
     parseSlug(slug) {
         const [vcs, owner, repo] = slug.split("/");
@@ -16307,6 +16298,36 @@ class CircleCIPipelineTrigger {
         }
         return branch;
     }
+}
+exports.CircleCIBase = CircleCIBase;
+
+
+/***/ }),
+
+/***/ 1373:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CircleCIPipelineTrigger = void 0;
+const core_1 = __nccwpck_require__(2186);
+const axios_1 = __importDefault(__nccwpck_require__(6545));
+const CircleCIBase_1 = __nccwpck_require__(9164);
+class CircleCIPipelineTrigger extends CircleCIBase_1.CircleCIBase {
+    constructor(context, host = process.env.CCI_HOST || "circleci.com") {
+        super(context, host);
+        this.pipeline_url = `${this.project_url}/pipeline`;
+        this.metaData = (0, core_1.getInput)("GHA_Meta");
+        this.parameters = {
+            GHA_Actor: context.actor,
+            GHA_Action: context.action,
+            GHA_Event: context.eventName,
+        };
+    }
     triggerPipeline() {
         const body = {
             parameters: this.parameters,
@@ -16319,13 +16340,13 @@ class CircleCIPipelineTrigger {
         }
         body[this.tag ? "tag" : "branch"] = this.tag || this.branch;
         (0, core_1.info)(`Triggering CircleCI Pipeline for ${this.owner}/${this.repo}`);
-        (0, core_1.info)(`  Triggering URL: ${this.url}`);
+        (0, core_1.info)(`  Triggering URL: ${this.pipeline_url}`);
         const trigger = this.tag ? `tag: ${this.tag}` : `branch: ${this.branch}`;
         (0, core_1.info)(`  Triggering ${trigger}`);
         (0, core_1.info)(`    Parameters:\n${JSON.stringify(this.parameters)}`);
         (0, core_1.endGroup)();
-        axios_1.default
-            .post(this.url, body, {
+        return axios_1.default
+            .post(this.pipeline_url, body, {
             headers: {
                 "content-type": "application/json",
                 "x-attribution-login": this.context.actor,
@@ -16341,12 +16362,13 @@ class CircleCIPipelineTrigger {
             (0, core_1.setOutput)("number", response.data.number);
             (0, core_1.setOutput)("state", response.data.state);
             (0, core_1.endGroup)();
+            return String(response.data.id);
         })
             .catch((error) => {
             (0, core_1.startGroup)("Failed to trigger CircleCI Pipeline");
-            (0, core_1.error)(error);
-            (0, core_1.setFailed)(error.message);
+            (0, core_1.setFailed)(error);
             (0, core_1.endGroup)();
+            return "";
         });
     }
 }
