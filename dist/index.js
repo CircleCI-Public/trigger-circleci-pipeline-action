@@ -16377,6 +16377,110 @@ exports.CircleCIPipelineTrigger = CircleCIPipelineTrigger;
 
 /***/ }),
 
+/***/ 7860:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CircleCIPipelineWait = void 0;
+const core_1 = __nccwpck_require__(2186);
+const axios_1 = __importDefault(__nccwpck_require__(6545));
+const CircleCIBase_1 = __nccwpck_require__(9164);
+class CircleCIPipelineWait extends CircleCIBase_1.CircleCIBase {
+    constructor(context, host = process.env.CCI_HOST || "circleci.com") {
+        super(context, host);
+        this.wait_for_pipeline = undefined;
+        this.base_url = `https://${this.host}/api/v2/project/${this.vcs}/${this.owner}/${this.repo}`;
+        if (JSON.parse((0, core_1.getInput)("wait-for-pipeline").toLowerCase())) {
+            this.wait_for_pipeline = {
+                timeout: Number((0, core_1.getInput)("wait-for-pipeline-timeout")),
+                interval: Number((0, core_1.getInput)("wait-for-pipeline-interval")),
+            };
+        }
+    }
+    checkWorkflow(workflow_url, params = undefined) {
+        return axios_1.default
+            .get(workflow_url, {
+            headers: {
+                "content-type": "application/json",
+                "x-attribution-login": this.context.actor,
+                "x-attribution-actor-id": this.context.actor,
+                "Circle-Token": `${process.env.CCI_TOKEN}`,
+            },
+            params: params,
+        })
+            .then((response) => {
+            let finished = true;
+            // Check status of all workflows
+            for (const workflow of response.data.items) {
+                switch (workflow.status) {
+                    // Do not do anything special for failing, wait for failed state
+                    case "failing":
+                    case "running":
+                    case "on_hold":
+                        finished = false;
+                        break;
+                    case "failed":
+                    case "not_run":
+                    case "error":
+                    case "unauthorized":
+                    case "canceled":
+                        // Accumulate any failed workflow states
+                        (0, core_1.setFailed)(`Failed workflow: ${workflow.name} as ${workflow.status}`);
+                        break;
+                    case "success":
+                        break;
+                    default:
+                        (0, core_1.setFailed)(`Unrecognized workflow state: ${workflow.status}\nDetails: ${workflow}`);
+                }
+            }
+            // Accumulate the next page results
+            if (response.data.next_page_token) {
+                params = {
+                    "next_page_token": response.data.next_page_token,
+                };
+            }
+            if (params) {
+                // Finished only when all workflow pages are finished
+                return finished && this.checkWorkflow(workflow_url, params);
+            }
+            return finished;
+        })
+            .catch((error) => {
+            (0, core_1.setFailed)(error);
+            // Return as finished
+            return true;
+        });
+    }
+    waitForPipeline(pipeline_id) {
+        // If not requested to wait for pipeline just return
+        if (!this.wait_for_pipeline)
+            return;
+        const workflow_url = `https://${this.host}/api/v2/pipeline/${pipeline_id}/workflow`;
+        (0, core_1.startGroup)("Waiting for pipeline to finish");
+        const waitInterval = setInterval(async () => {
+            const finished = await this.checkWorkflow(workflow_url);
+            if (finished) {
+                clearInterval(waitInterval);
+                clearTimeout(waitTimeout);
+            }
+        }, this.wait_for_pipeline.interval * 1000);
+        const waitTimeout = setTimeout(() => {
+            clearInterval(waitInterval);
+            (0, core_1.setFailed)(`Pipeline did not finish in ${this.wait_for_pipeline?.timeout} (s)`);
+        }, this.wait_for_pipeline.timeout * 1000);
+        (0, core_1.endGroup)();
+    }
+}
+exports.CircleCIPipelineWait = CircleCIPipelineWait;
+
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -16576,8 +16680,16 @@ var exports = __webpack_exports__;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const CircleCIPipelineTrigger_1 = __nccwpck_require__(1373);
 const github_1 = __nccwpck_require__(5438);
-const trigger = new CircleCIPipelineTrigger_1.CircleCIPipelineTrigger(github_1.context);
-trigger.triggerPipeline();
+const CircleCIPipelineWait_1 = __nccwpck_require__(7860);
+async function main() {
+    const trigger = new CircleCIPipelineTrigger_1.CircleCIPipelineTrigger(github_1.context);
+    const pipelineID = await trigger.triggerPipeline();
+    if (pipelineID) {
+        const waiter = new CircleCIPipelineWait_1.CircleCIPipelineWait(github_1.context);
+        waiter.waitForPipeline(pipelineID);
+    }
+}
+main();
 
 })();
 
