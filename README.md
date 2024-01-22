@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0.5
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.1.0
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
 ```
@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0.5
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.1.0
         with:
           GHA_Meta: "<custom data>"
         env:
@@ -92,7 +92,7 @@ jobs:
     steps:
       - name: <customize name>
         id: <customize id>
-        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.0.5
+        uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.1.0
         with:
           target-slug: "gh/<org>/<repo>" # Will trigger the pipeline for external project
         env:
