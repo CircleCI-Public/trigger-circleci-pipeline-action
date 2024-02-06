@@ -1,6 +1,6 @@
 > [!NOTE]  
 >
-> This GitHub Action does not yet support CircleCI projects that are integrated with the [CircleCI GitHub App](https://circleci.com/docs/github-apps-integration/).  If your CircleCI project URL looks like this: \https://app.circleci.com/projects/organizations/**circleci**%, you are integrating with the CircleCI GitHub App and this GitHub Action is not yet supported.  Contact sebastian@circleci.com with any questions/feedback.  If your CircleCI project URL looks like this: \https://app.circleci.com/projects/project-dashboard/**github**/, you are using [CircleCI's OAuth App integration](https://circleci.com/docs/github-integration/) and this GitHub Action is supported.
+> This GitHub Action does not yet support CircleCI projects that are integrated with the [CircleCI GitHub App](https://circleci.com/docs/github-apps-integration/).  If your CircleCI project URL looks like this: `https://app.circleci.com/projects/organizations/**circleci**%`, you are integrating with the CircleCI GitHub App and this GitHub Action is not yet supported.  Contact sebastian@circleci.com with any questions/feedback.  If your CircleCI project URL looks like this: `https://app.circleci.com/projects/project-dashboard/**github**/`, you are using [CircleCI's OAuth App integration](https://circleci.com/docs/github-integration/) and this GitHub Action is supported.
 
 # Trigger CircleCI Pipeline
 
