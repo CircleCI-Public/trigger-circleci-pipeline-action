@@ -26,5 +26,5 @@ outputs:
   created_at:
     description: The date and time the pipeline was created.
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
