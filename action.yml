@@ -7,6 +7,9 @@ inputs:
   GHA_Meta:
     required: false
     description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta.'
+  GHA_Actor:
+    required: false
+    description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Actor.'
   target-slug:
     required: false
     description: 'The slug of the target CircleCI project. For example, "github/<org>/<project>". Will default to the current project. Can be overwritten with "TARGET_SLUG" environment variable.'
