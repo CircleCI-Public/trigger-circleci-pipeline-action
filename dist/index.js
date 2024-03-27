@@ -16270,7 +16270,7 @@ class CircleCIPipelineTrigger {
         this.tag = this.getTag();
         this.branch = this.getBranch();
         this.parameters = {
-            GHA_Actor: context.actor,
+            GHA_Actor: (0, core_1.getInput)("GHA_Actor") ?? context.actor,
             GHA_Action: context.action,
             GHA_Event: context.eventName,
         };
