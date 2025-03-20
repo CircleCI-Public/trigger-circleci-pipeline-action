@@ -1,5 +1,7 @@
 > [!NOTE]  
 >
+> **CircleCI now supports [more events to trigger workflows](https://circleci.com/docs/github-trigger-event-options/).**  Not seeing the event that you want, let us know [here](https://forms.gle/j7DC78CQNRmSBn159). 
+>
 > This GitHub Action does not yet support CircleCI projects that are integrated with the [CircleCI GitHub App](https://circleci.com/docs/github-apps-integration/).  If your CircleCI project URL looks like this: `https://app.circleci.com/projects/organizations/circleci%`, you are integrating with the CircleCI GitHub App and this GitHub Action is not yet supported.  Contact sebastian@circleci.com with any questions/feedback.  If your CircleCI project URL looks like this: `https://app.circleci.com/projects/project-dashboard/github/`, you are using [CircleCI's OAuth App integration](https://circleci.com/docs/github-integration/) and this GitHub Action is supported.
 
 # Trigger CircleCI Pipeline
