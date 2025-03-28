@@ -16,6 +16,17 @@ inputs:
   target-tag:
     required: false
     description: 'The tag of the target CircleCI project. Will default to the current tag name if set. This or branch should be overwritten if "target-slug" is set. Can be overwritten with "TARGET_TAG" environment variable.'
+  wait-for-pipeline:
+    required: false
+    description: 'Wait for pipeline to finish'
+  wait-for-pipeline-timeout:
+    required: false
+    default: "300"
+    description: 'Wait for pipeline timeout'
+  wait-for-pipeline-interval:
+    required: false
+    default: "10"
+    description: 'Wait for pipeline to finish'
 outputs:
   id:
     description: The unique ID of the pipeline.
